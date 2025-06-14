@@ -3,7 +3,7 @@ public class ClassContext: DbContext
 {
     public ClassContext()
     {
-        Database.EnsureCreated();
+		Database.EnsureCreated();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -12,5 +12,19 @@ public class ClassContext: DbContext
     }
 
     public DbSet<Worker> Workers { get; set; }
+	public DbSet<Role> Roles { get; set; }
+	public DbSet<User> Users { get; set; }
+	public DbSet<WorkerUser> WorkerUser { get; set; }
+    public DbSet<UserSession> UserSessions { get; set; }
+    public DbSet<Production> Productions { get; set; }
+    public DbSet<ProductionCategory> ProductionCategories { get; set; }
+    public DbSet<ProductionProperty> ProductionProperties { get; set; }
+    public DbSet<Orders> Orders { get; set; }
+    public DbSet<Client> Clients { get; set; }
+    public DbSet<Factory> Factories { get; set; }
+    public DbSet<Warehouse> Warehouses { get; set; }
+    public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
+    public DbSet<ProductionProductionProperty> ProductionProductionPropertes { get; set; }
+    public DbSet<Post> Posts { get; set; }
 }
 

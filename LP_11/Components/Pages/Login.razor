@@ -1,0 +1,40 @@
+﻿@page "/"
+@using Utils;
+@rendermode InteractiveServer
+@inject IJSRuntime Js;
+
+<PageTitle>Авторизация</PageTitle>
+
+
+<div class="main-container">
+	<div class="login-box">
+		<form class="login-form" @onsubmit=LoginSubmit>
+			<p class="login-text">Авторизация</p>
+			<input @bind-value=login class="login-input" type="text" placeholder="Логин" required/>
+			<input @bind-value=password class="login-input" type="password" placeholder="Пароль" required/>
+			<input class="login-button" type="submit" value="Войти" placeholder="Текст" />
+		</form>
+
+	</div>
+</div>
+
+@code {
+	string login = "";
+	string password = "";
+
+	private async void LoginSubmit()
+	{
+		List<User> users = Database.Context.Users.ToList();
+		if (users.Any(u => u.Login == login))
+		{
+			User user = users.Where(u => u.Login == login).First();
+			if (Encryptor.Decrypt(Convert.ToBase64String(user.Password)) == password)
+			{
+				await Js.InvokeVoidAsync("open", "home/" + Encryptor.Encrypt<String>(user.Id.ToString()), "_self");
+				Database.CreateSession(user);
+				return;
+			}
+		}
+		await Js.InvokeVoidAsync("alert", "Неверные данные");
+	}
+}

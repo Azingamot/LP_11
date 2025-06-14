@@ -1,4 +1,82 @@
-﻿body {
-    background-color: black;
+﻿@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --back: #292a2d;
+    --accent: #afeeee;
+    --input: #5e6c6c;
+    --text: #f8faff;
+    --dark: #404045;
+}
+
+body {
+    background-color: var(--back);
+    color: var(--text);
+    font-family: "Roboto", sans-serif;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.login-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    justify-items: center;
+    height: 60vh;
+    width: 30vw;
+    background-color: var(--dark);
+    border-radius: 20px;
+}
+
+.login-form
+{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+    align-content: center;
+    gap: 40px;
+    text-align: center;
+    margin: 10%;
+}
+
+.login-text 
+{
+    font-size: 25px;
+    margin: 0px;
+}
+
+.login-input {
+    border-radius: 20px;
+    padding-left: 10px;
+    font-size: 15px;
+    align-content: center;
+    align-self: center;
+    border-width: 0px;
+    height: clamp(20px, 50vh, 40px);
+    width: clamp(100px,80vw,250px);
+    background-color: var(--input);
+    color: black;
+}
+
+.login-button {
+    height: clamp(10px, 10vh, 40px);
+    width: clamp(100px,80vw,250px);
+    align-self: center;
+    border-width: 0px;
+    font-size: 18px;
+    border-radius: 20px;
+    background-color: var(--accent);
     color: white;
 }

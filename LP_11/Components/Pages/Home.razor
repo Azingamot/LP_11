@@ -1,19 +1,31 @@
-﻿@page "/"
+﻿@page "/home/{id}"
+@inject NavigationManager nav;
+@rendermode InteractiveServer
+@using Utils;
 
-<PageTitle>Home</PageTitle>
-
-<head>
-	<link rel="stylesheet" href="styles/home.css?version=0.1" />
-</head>
+<PageTitle>Главная</PageTitle>
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+@{ CheckLogin();}
 
-@{
-	foreach (Worker worker in Database.Context.Workers)
+
+@code {
+	[Parameter]
+	public string id { get; set; } = "";
+	private async void CheckLogin()
 	{
-		<h1>@worker.FullName</h1>
+		try
+		{
+			if (!Database.CheckSession(int.Parse(Encryptor.Decrypt(id))))
+			{
+				nav.NavigateTo("/", true, true);
+			}
+		}
+		catch
+		{
+			nav.NavigateTo("/", true, true);
+		}
 	}
 }
 
