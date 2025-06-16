@@ -75,7 +75,7 @@ namespace LP_11.Utils
 			}
 			catch
 			{
-				return "";
+				return "0";
 			}
 		}
 	}

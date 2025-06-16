@@ -1,0 +1,27 @@
+﻿@page "/import"
+@using Utils;
+@using Microsoft.EntityFrameworkCore;
+@inject NavigationManager nav;
+@inject ICookie cookie;
+@rendermode InteractiveServer
+
+<PageTitle>Импорт</PageTitle>
+
+<LayoutView Layout="typeof(Views.Header)"></LayoutView>
+
+<head>
+	<link rel="stylesheet" href="styles/main.css?version=0.2" />
+</head>
+
+<div class="main-container">
+	<div class="container">
+		<h1 style="display: flex; justify-content: center; width: 100%;">Импорт</h1>
+	</div>
+	<div class="container">
+		<h3 style="text-align: center">Добро пожаловать в систему учета данных компании ООО "ЗВЕЗДА"</h3>
+	</div>
+</div>
+
+@code {
+}
+

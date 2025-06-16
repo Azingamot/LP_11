@@ -313,9 +313,14 @@ namespace LP_11.Migrations
                     b.Property<int>("ProductionId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProductionId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("WarehouseProducts");
                 });
@@ -463,7 +468,15 @@ namespace LP_11.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Production");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("Worker", b =>

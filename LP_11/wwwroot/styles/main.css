@@ -1,0 +1,190 @@
+﻿:root {
+    --side-bg: #212327;
+}
+
+body 
+{
+    height: 100%;
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.background 
+{
+    background-image: linear-gradient(45deg, var(--back), var(--side-bg));
+}
+
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+.main-container
+{
+    margin: 20px;
+    align-items: flex-start;
+    justify-items: flex-start;
+    justify-content: flex-start;
+    gap: 20px;
+    overflow-x: hidden;
+}
+
+.main-container p 
+{
+    color: var(--text);
+    margin-top: 5px;
+    max-width:50%;
+}
+
+.container 
+{
+    position: relative;
+    width: 80vw;
+    border-radius: 1em;
+    background-color: var(--back);
+    padding: min(3em, 7%);
+    margin-right: min(20px, 5%);
+}
+
+.sidebar {
+    position: sticky;
+    align-self: start;
+    top: 0;
+    display: flex;
+    justify-content: flex-start;
+    margin-right: 20px;
+    box-sizing: border-box;
+    min-width: 200px;
+    flex-wrap: nowrap;
+}
+
+.side-background 
+{
+    position: absolute;
+    width: 200px;
+    min-height: 100vh;
+    z-index: -1;
+    background-color: var(--side-bg);
+}
+
+#sidebar.close {
+    padding: 0px;
+    min-width: 50px;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: clip;
+    transition: 300ms ease-in-out;
+}
+
+#toggle-button {
+    width: 50px;
+    transition: 150ms ease;
+    background: none;
+    border-radius: .5em;
+    border: none;
+    padding: 1em;
+    margin-left: auto;
+    cursor: pointer;
+}
+
+#toggle-button svg 
+{
+    transition: 150ms ease;
+    animation: rotate ease linear 2s reverse;
+}
+
+#toggle-button.rotate svg
+{
+    animation: rotate ease linear 2s;
+    transition: 150ms ease;
+}
+
+@keyframes rotate
+{
+    from 
+    {
+        transform: rotate(0deg);
+    }
+    to
+    {
+        transform: rotate(360deg);
+    }
+}
+
+#toggle-button:hover
+{
+    background-color: var(--hovered);
+}
+
+.rotate svg:last-child
+{
+    transform: rotate(180deg);
+}
+
+.sidebar ul li:first-child
+{
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.sidebar ul li.active a
+{
+    color: var(--accent);
+}
+
+.active svg 
+{
+    fill: var(--accent);
+}
+
+.logo 
+{
+    font-weight: 600;
+}
+
+.star 
+{
+    object-fit: contain;
+    width: 50px;
+    height: 50px;
+    padding: 0px;
+    margin: 0px;
+}
+
+.sidebar ul
+{
+    list-style: none;
+}
+
+.sidebar a, .logo 
+{
+    border-radius: .5em;
+    padding: .85em;
+    color: var(--text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.sidebar span 
+{
+    flex-shrink: 0;
+    flex-grow: 1;
+}
+
+.sidebar a:hover
+{
+    background-color: var(--hovered);
+}
+
+.sidebarholder {
+    height: 100%;
+    background-color: var(--side-bg);
+    padding: 0px;
+    margin: 0px;
+}

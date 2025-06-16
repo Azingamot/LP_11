@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LP_11.Migrations
 {
     [DbContext(typeof(ClassContext))]
-    [Migration("20250614080658_Initial")]
-    partial class Initial
+    [Migration("20250616170622_warehouse")]
+    partial class warehouse
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -316,9 +316,14 @@ namespace LP_11.Migrations
                     b.Property<int>("ProductionId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ProductionId");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("WarehouseProducts");
                 });
@@ -466,7 +471,15 @@ namespace LP_11.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Production");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("Worker", b =>

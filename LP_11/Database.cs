@@ -8,12 +8,13 @@ public class Database
 
     public static void OnLoad()
     {
-        if (!Context.Users.Any(u => u.Login == "admin"))
+        ClassContext LoadingContext = new ClassContext();
+        if (!LoadingContext.Users.Any(u => u.Login == "admin"))
         {
-            Context.WorkerUser.Add(new WorkerUser() { Worker = new Worker() { FullName = "admin" },
+            LoadingContext.WorkerUser.Add(new WorkerUser() { Worker = new Worker() { FullName = "admin" },
             User = new User() { Login = "admin", Password = Encryptor.Encrypt<byte[]>("12345"), Role = new Role { Name = "admin", AccessLevel = 10 } }
 			});
-            Context.SaveChanges();
+            LoadingContext.SaveChanges();
         }
     }
 
@@ -30,14 +31,15 @@ public class Database
 
     public static bool CheckSession(int id)
 	{
-        if (Context.UserSessions.Any(u => u.User.Id == id))
+        ClassContext checkContext = new ClassContext();
+        if (checkContext.UserSessions.Any(u => u.User.Id == id))
         {
-            UserSession session = Context.UserSessions.Where(u => u.User.Id == id).First();
+            UserSession session = checkContext.UserSessions.Where(u => u.User.Id == id).First();
 
             if (DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc) - DateTime.SpecifyKind(session.LoginTime, DateTimeKind.Utc) > TimeSpan.FromMinutes(30))
             {
-                Context.UserSessions.Remove(session);
-                Context.SaveChanges();
+                checkContext.UserSessions.Remove(session);
+                checkContext.SaveChanges();
                 return false;
             }
             return true;
