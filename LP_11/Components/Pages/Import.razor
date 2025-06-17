@@ -3,6 +3,7 @@
 @using Microsoft.EntityFrameworkCore;
 @inject NavigationManager nav;
 @inject ICookie cookie;
+@inject IJSRuntime Js;
 @rendermode InteractiveServer
 
 <PageTitle>Импорт</PageTitle>
@@ -18,10 +19,71 @@
 		<h1 style="display: flex; justify-content: center; width: 100%;">Импорт</h1>
 	</div>
 	<div class="container">
-		<h3 style="text-align: center">Добро пожаловать в систему учета данных компании ООО "ЗВЕЗДА"</h3>
+		<h3>Загрузите файл, выберите тип импорта и нажмите на кнопку. 
+			Примеры документов для импорта представлены в документации.</h3>
+	</div>
+	<div class="container">
+		<form class="base-form" @onsubmit="ImportData">
+			<table>
+				<tr>
+					<th>
+						<p>Тип: </p>
+					</th>
+					<td>
+						<select @bind="choose" required>
+							<option>Сотрудники</option>
+							<option>Оборудование</option>
+							<option>Клиенты</option>
+							<option>Характеристики</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Файл: </p>
+					</th>
+					<td>
+						<InputFile OnChange="OnFileChange" accept=".xlsx, .xls, .et, .xlt" required></InputFile>
+					</td>
+				</tr>
+			</table>			
+			<div style="display: flex; justify-content: center; width: 100%;">
+				<input class="main-button" type="submit" value="Импортировать" />
+			</div>
+		</form>
+		
 	</div>
 </div>
 
 @code {
+	string choose = "";
+	IBrowserFile? file;
+
+	private async void OnFileChange(InputFileChangeEventArgs args)
+	{
+		file = args.File;
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private async void ImportData()
+	{
+		if (!string.IsNullOrEmpty(choose) && file != null)
+		{
+			FileStream fs = new FileStream(file.Name, FileMode.Create);
+			await file.OpenReadStream().CopyToAsync(fs);
+
+			bool res = DataImport.FromExcel(fs, choose);
+			if (res)
+			{
+				await Js.InvokeVoidAsync("alert", "Данные успешно импортированы");
+			}
+			else
+			{
+				await Js.InvokeVoidAsync("alert", "Данные не были импортированы");
+			}
+			fs.Close();
+			File.Delete(fs.Name);
+		}
+	}
 }
 

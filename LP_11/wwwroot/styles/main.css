@@ -42,7 +42,7 @@ body
 .container 
 {
     position: relative;
-    width: 80vw;
+    width: 70vw;
     border-radius: 1em;
     background-color: var(--back);
     padding: min(3em, 7%);
@@ -187,4 +187,44 @@ body
     background-color: var(--side-bg);
     padding: 0px;
     margin: 0px;
+}
+
+.base-form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 40px;
+}
+
+.base-form p 
+{
+    display: flex;
+    font-size: 20px;
+    margin: 0px; 
+    align-items: center;
+}
+
+table
+{
+    display: flex;
+    gap: 40px;
+    flex-direction: column;
+}
+
+select, input, textarea {
+    background-color: var(--side-bg);
+    width: 100%;
+    padding: 10px;
+    font-size: 20px;
+    border: 0px;
+    box-sizing: border-box;
+    font-family: "Roboto" sans-serif;
+    color: var(--text);
+}
+
+.main-button
+{
+    display: flex;
+    justify-content: center;
+    width: 40%;
 }
