@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LP_11.Migrations
 {
     [DbContext(typeof(ClassContext))]
-    [Migration("20250616170622_warehouse")]
-    partial class warehouse
+    [Migration("20250617063449_d")]
+    partial class d
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,15 +38,18 @@ namespace LP_11.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("text");
 
-                    b.Property<int?>("INN")
-                        .HasMaxLength(12)
-                        .HasColumnType("integer");
+                    b.Property<string>("INN")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("damn")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -179,17 +182,21 @@ namespace LP_11.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ProductionCategoryId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("ProductionId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ProductionPropetyId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductionCategoryId");
-
                     b.HasIndex("ProductionId");
+
+                    b.HasIndex("ProductionPropetyId");
 
                     b.ToTable("ProductionProductionPropertes");
                 });
@@ -205,9 +212,6 @@ namespace LP_11.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -424,21 +428,21 @@ namespace LP_11.Migrations
 
             modelBuilder.Entity("ProductionProductionProperty", b =>
                 {
-                    b.HasOne("ProductionCategory", "ProductionCategory")
-                        .WithMany()
-                        .HasForeignKey("ProductionCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Production", "Production")
                         .WithMany()
                         .HasForeignKey("ProductionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ProductionProperty", "ProductionPropety")
+                        .WithMany()
+                        .HasForeignKey("ProductionPropetyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Production");
 
-                    b.Navigation("ProductionCategory");
+                    b.Navigation("ProductionPropety");
                 });
 
             modelBuilder.Entity("User", b =>

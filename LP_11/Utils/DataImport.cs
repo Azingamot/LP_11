@@ -50,12 +50,12 @@ public class DataImport
 						}
 						Factory factory = context.Factories.Where(u => u.Name == excelWorksheet.Cells[row, 6].Text).FirstOrDefault();
 
-						if (factory == null) 
+						if (factory == null)
 						{
 							Console.WriteLine(excelWorksheet.Cells[row, 6].Text);
 							factory = new Factory() { Name = excelWorksheet.Cells[row, 6].Text, Adress = excelWorksheet.Cells[row, 7].Text };
 						}
-						
+
 
 						worker.Post = post;
 						worker.Factory = factory;
@@ -102,12 +102,60 @@ public class DataImport
 					{
 						Client client = new Client();
 						client.Name = value.Text;
-						client.INN = int.Parse(excelWorksheet.Cells[row, 2].Text);
+						client.INN = excelWorksheet.Cells[row, 2].Text;
 						client.Email = excelWorksheet.Cells[row, 3].Text;
 						client.PhoneNumber = excelWorksheet.Cells[row, 4].Text;
 						client.Adress = excelWorksheet.Cells[row, 5].Text;
 
 						context.Attach(client);
+					}
+					else if (type == "Характеристики")
+					{
+						string prodName = value.Text;
+						string propName = excelWorksheet.Cells[row, 2].Text;
+						string propValue = excelWorksheet.Cells[row, 3].Text;
+
+						Production? prod = context.Productions.Where(u => u.Name == prodName).FirstOrDefault();
+						ProductionProperty? prop = context.ProductionProperties.Where(u => u.Name == propName).FirstOrDefault();
+
+						if (prod == null)
+						{
+							continue;
+						}
+
+						if (propName == null)
+						{
+							prop = new ProductionProperty() { Name = propName };
+						}
+
+						ProductionProductionProperty productionProp = new ProductionProductionProperty()
+						{
+							Production = prod,
+							ProductionPropety = prop,
+							Value = propValue
+						};
+						context.ProductionProductionPropertes.Attach(productionProp);
+
+					}
+					else if (type == "Оборудование на складах")
+					{
+						string wareName = value.Text;
+						string adress = excelWorksheet.Cells[row, 2].Text;
+						string propName = excelWorksheet.Cells[row, 3].Text;
+						int count = int.Parse(excelWorksheet.Cells[row, 4].Text);
+
+						Warehouse? ware = context.Warehouses.Where(u => u.Name == wareName).FirstOrDefault();
+						Production prod = context.Productions.Where(u => u.Name == propName).FirstOrDefault();
+
+						if (prod == null) continue;
+
+						if (ware == null)
+						{
+							ware = new Warehouse() { Name = wareName, Adress = adress };
+						}
+
+						WarehouseProduct warehouseProduct = new WarehouseProduct() { Warehouse = ware, Production = prod, Count = count };
+						context.WarehouseProducts.Attach(warehouseProduct);
 					}
 					context.SaveChanges();
 				}
