@@ -1,0 +1,49 @@
+﻿@page "/admin"
+@using Utils;
+@using Microsoft.EntityFrameworkCore;
+@inject NavigationManager nav;
+@inject IJSRuntime Js;
+@inject ICookie cookie;
+@rendermode InteractiveServer
+
+<PageTitle>Панель администратора</PageTitle>
+
+<LayoutView Layout="typeof(Views.Header)"></LayoutView>
+
+<div class="main-container">
+	<div class="container">
+		<h1 style="display: flex; justify-content: center; width: 100%;">Панель администратора</h1>
+	</div>
+	<div class="container">
+		<form class="base-form" @onsubmit=GetPassword>
+			<table>
+				<tr>
+					<th>
+						<input @bind=login type="text" placeholder="логин" />
+					</th>
+					<td>
+						<input type="submit" value="Получить пароль" />
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+</div>
+
+@code {
+	private string? login = "";
+
+	private async void GetPassword()
+	{
+		if (!string.IsNullOrEmpty(login))
+		{
+			User? user = Database.Context.Users.Where(u => u.Login == login).FirstOrDefault();
+
+			if (user != null)
+			{
+				await Js.InvokeVoidAsync("alert", Encryptor.Decrypt(Convert.ToBase64String(user.Password)));
+			}
+		}
+	}
+}
+

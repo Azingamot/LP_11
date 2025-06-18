@@ -8,7 +8,7 @@ public class ClassContext: DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql("Host=localhost; Port=5432; Database=LP_11; Username=postgres; Password=azingamot");
+        optionsBuilder.UseNpgsql("Host=localhost; Port=5432; Database=LP_11; Username=postgres; Password=azingamot; Include Error Detail=true");
     }
 
     public DbSet<Worker> Workers { get; set; }

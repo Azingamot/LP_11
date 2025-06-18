@@ -123,10 +123,12 @@ public class DataImport
 							continue;
 						}
 
-						if (propName == null)
+						if (prop == null)
 						{
 							prop = new ProductionProperty() { Name = propName };
 						}
+						context.ProductionProperties.Attach(prop);
+						context.SaveChanges();
 
 						ProductionProductionProperty productionProp = new ProductionProductionProperty()
 						{

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LP_11.Migrations
 {
     [DbContext(typeof(ClassContext))]
-    partial class ClassContextModelSnapshot : ModelSnapshot
+    [Migration("20250618040840_ogo")]
+    partial class ogo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -91,9 +94,6 @@ namespace LP_11.Migrations
                     b.Property<int>("ProductionId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("WarehouseId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("WorkerId")
                         .HasColumnType("integer");
 
@@ -102,8 +102,6 @@ namespace LP_11.Migrations
                     b.HasIndex("ClientId");
 
                     b.HasIndex("ProductionId");
-
-                    b.HasIndex("WarehouseId");
 
                     b.HasIndex("WorkerId");
 
@@ -402,10 +400,6 @@ namespace LP_11.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Warehouse", "Warehouse")
-                        .WithMany()
-                        .HasForeignKey("WarehouseId");
-
                     b.HasOne("Worker", "Worker")
                         .WithMany()
                         .HasForeignKey("WorkerId")
@@ -415,8 +409,6 @@ namespace LP_11.Migrations
                     b.Navigation("Client");
 
                     b.Navigation("Production");
-
-                    b.Navigation("Warehouse");
 
                     b.Navigation("Worker");
                 });

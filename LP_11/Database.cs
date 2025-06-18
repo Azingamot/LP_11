@@ -29,6 +29,16 @@ public class Database
         Context.SaveChanges();
     }
 
+    public static void DeleteSession(int id)
+    {
+        UserSession? session = Context.UserSessions.Where(u => u.Id == id).FirstOrDefault();
+        if (session != null)
+        {
+            Context.UserSessions.Remove(session);
+            Context.SaveChanges();
+        }
+    }
+
     public static bool CheckSession(int id)
 	{
         ClassContext checkContext = new ClassContext();
