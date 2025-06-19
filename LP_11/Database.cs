@@ -56,5 +56,27 @@ public class Database
         }
         return false;
     }
+
+    public static bool LoadFile(Production production, byte[] array)
+    {
+        try
+        {
+            ProductionImage? productionImage = Context.ProductionImages.Where(u => u.Production == production).FirstOrDefault();
+
+            if (productionImage != null)
+            {
+                Context.Remove(productionImage);
+            }
+            productionImage = new ProductionImage() { Production = production, Image = array };
+            Context.ProductionImages.Attach(productionImage);
+            Context.SaveChanges();    
+            return true;
+        }
+        catch (Exception ex) 
+        {
+            Console.WriteLine(ex.ToString());
+            return false;
+        } 
+    }
 }
 

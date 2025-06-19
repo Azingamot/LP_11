@@ -1,0 +1,256 @@
+﻿@page "/order"
+@using Utils;
+@using Microsoft.EntityFrameworkCore;
+@inject NavigationManager nav;
+@inject ICookie cookie;
+@inject IJSRuntime Js;
+@rendermode InteractiveServer
+
+<PageTitle>Заказы</PageTitle>
+
+<LayoutView Layout="typeof(Views.Header)"></LayoutView>
+
+<div class="main-container">
+	<div class="container">
+		<h1 style="display: flex; justify-content: center; width: 100%;">Заказы</h1>
+	</div>
+	<div class="container">
+		<form @onsubmit=CreateOrder class="base-form small-text">
+			<h3 style="text-align: center">Добавление заказов</h3>
+			<table class="property-table">
+				<tr>
+					<th>
+						<p>Сотрудник</p>
+					</th>
+					<td>
+						<select @bind=workerId required>
+							<option></option>
+							@if (workers != null)
+							{
+								@foreach (Worker worker in workers)
+								{
+									<option value="@worker.Id">@worker.FullName</option>
+								}
+							}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Клиент</p>
+					</th>
+					<td>
+						<select @bind=clientId required>
+							<option></option>
+							@if (clients != null)
+							{
+								@foreach (Client client in clients)
+								{
+									<option value="@client.Id">@client.Name</option>
+								}
+							}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Оборудование</p>
+					</th>
+					<td>
+						<select @bind=productionId required>
+							<option></option>
+							@if (productions != null)
+							{
+								@foreach (Production production in productions)
+								{
+									<option value="@production.Id">@production.Name</option>
+								}
+							}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Склад</p>
+					</th>
+					<td>
+						<select @bind=warehouseId required>
+							<option></option>
+							@if (warehouses != null)
+							{
+								@foreach (Warehouse warehouse in warehouses)
+								{
+									<option value="@warehouse.Id">@warehouse.Name</option>
+								}
+							}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Количество</p>
+					</th>
+					<td>
+						<input @bind=count required type="number" />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Статус</p>
+					</th>
+					<td>
+						<InputCheckbox @bind-Value=check></InputCheckbox>
+					</td>
+				</tr>
+			</table>
+			<div style="width: 100%; display: flex; justify-content: center">
+				<input type="submit" class="main-button" value="Добавить" />
+			</div>
+		</form>
+	</div>
+	<div class="container">
+		<h3 style="text-align: center">Список заказов компании компании</h3>
+	</div>
+	@if (orders != null)
+	{
+		foreach(Orders order in orders)
+		{
+			<div class="container">
+				<table class="production-table">
+					<tr>
+						<th>
+							<h3>
+								Заказ №@order.Id
+							</h3>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							<p>Клиент</p>
+						</th>
+						<td>
+							@if (order.Client != null)
+							{
+								@order.Client.Name
+							}
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<p>Сотрудник</p>
+						</th>
+						<td>
+							@if (order.Worker != null)
+							{
+								@order.Worker.FullName
+							}
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<p>Оборудование</p>
+						</th>
+						<td>
+							@if (order.Production != null)
+							{
+								@order.Production.Name
+							}
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<p>Склад</p>
+						</th>
+						<td>
+							@if (order.Warehouse != null)
+							{
+								@order.Warehouse.Name
+							}
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<p>Количество</p>
+						</th>
+						<td>
+							@order.Count
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<p>Статус</p>
+						</th>
+						@if (order.Fulfilled)
+						{
+							<td style="color: lightgreen">Выполнен</td>
+						}
+						else
+						{
+							<td style="color: red">Не выполнен</td>
+						}
+					</tr>
+				</table>
+			</div>
+		}
+	}
+</div>
+
+@code 
+{
+	private List<Orders> orders = new();
+	private List<Production> productions = new();
+	private List<Client> clients = new();
+	private List<Worker> workers = new();
+	private List<Warehouse> warehouses = new();
+
+	private int? workerId;
+	private int? clientId;
+	private int? productionId;
+	private int? warehouseId;
+	private int count;
+	private bool check;
+
+	protected override void OnInitialized()
+	{
+		productions = DataReceiver.ReceiveProduction();
+		clients = DataReceiver.ReceiveClients();
+		workers = DataReceiver.ReceiveWorkers();
+		warehouses = DataReceiver.ReceiveWarehouses();
+		LoadOrders();
+	}
+
+	private async void LoadOrders()
+	{
+		orders = DataReceiver.ReceiveOrders();
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private async void CreateOrder()
+	{
+		try 
+		{
+			ClassContext context = new ClassContext();
+			Orders orders = new Orders();
+
+			orders.Production = context.Productions.Where(u => u.Id == productionId).FirstOrDefault();
+			orders.Warehouse = context.Warehouses.Where(u => u.Id == warehouseId).FirstOrDefault();
+			orders.Worker = context.Workers.Where(u => u.Id == workerId).FirstOrDefault();
+			orders.Client = context.Clients.Where(u => u.Id == clientId).FirstOrDefault();
+			orders.Count = count;
+			orders.Fulfilled = check;
+
+			context.Orders.Add(orders);
+			context.SaveChanges();
+
+			LoadOrders();
+
+			await Js.InvokeVoidAsync("alert", "Заказ был успешно создан");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine(ex.ToString());
+			await Js.InvokeVoidAsync("alert", "Заказ не был создан");
+		}
+	}
+}
+

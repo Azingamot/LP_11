@@ -3,6 +3,7 @@
 @using Microsoft.EntityFrameworkCore;
 @inject NavigationManager nav;
 @inject ICookie cookie;
+@inject IJSRuntime Js;
 @rendermode InteractiveServer
 
 <PageTitle>Оборудование</PageTitle>
@@ -50,10 +51,25 @@
 								</a>
 							</th>		
 						</tr>
+						<tr>
+							<th style="width: 100%">
+								<InputFile OnChange="OnFileChanged" accept=".jpeg, .jpg, .png"></InputFile>
+							</th>
+							<td>
+								<input @onclick="() => LoadFile(prod)" type="button" value="Загрузить"/>
+							</td>
+						</tr>
 					</table>
 					<div class="production-image-holder">
 						<div class="production-image">
-							<img src="images/not_uploaded.png" />
+							@if (!string.IsNullOrEmpty(GetImage(prod)))
+							{
+								<img src="data: image/jpg; base64, @GetImage(prod)"/>
+							}
+							else 
+							{
+								<img src="images/not_uploaded.png" />
+							}
 						</div>
 					</div>
 				</div>
@@ -63,12 +79,55 @@
 </div>
 
 @code {
-	List<Production> productions = new();
+	private List<Production> productions = new();
+	private IBrowserFile? file;
 
 	protected override async void OnInitialized()
 	{
 		productions = DataReceiver.ReceiveProduction();
 		await InvokeAsync(StateHasChanged);
+	}
+
+	private string GetImage(Production production)
+	{
+		if (production != null)
+		{
+			ClassContext context = new ClassContext();
+			ProductionImage? productionImage = context.ProductionImages.Where(u => u.Production == production).FirstOrDefault();
+
+			if (productionImage != null)
+			{
+				string image = Convert.ToBase64String(productionImage.Image);
+				return image;
+			}
+		}
+		return "";
+	}
+
+	private void OnFileChanged(InputFileChangeEventArgs args)
+	{
+		file = args.File;
+	}
+
+	private async void LoadFile(Production production)
+	{
+		if (production != null && file != null)
+		{
+			MemoryStream ms = new MemoryStream();
+			await file.OpenReadStream().CopyToAsync(ms);
+			byte[] imageBytes = ms.ToArray();
+			bool res = Database.LoadFile(production, imageBytes);
+
+			if (res)
+			{
+				await Js.InvokeVoidAsync("alert", "Файл успешно загружен");
+				await InvokeAsync(StateHasChanged);
+			}
+			else 
+			{
+				await Js.InvokeVoidAsync("alert", "Файл не был загружен");
+			}
+		}
 	}
 }
 

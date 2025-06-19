@@ -43,6 +43,15 @@ public class DataReceiver
 		return workers;
 	}
 
+	public static List<Warehouse> ReceiveWarehouses()
+	{
+		ClassContext context = new ClassContext();
+
+		List<Warehouse> warehouses = context.Warehouses.ToList();
+
+		return warehouses;
+	}
+
 	public static List<Factory> ReceiveFactories()
 	{
 		ClassContext context = new ClassContext();
@@ -60,6 +69,17 @@ public class DataReceiver
 
 		return posts; 
 	}
+
+	public static List<Orders> ReceiveOrders()
+	{
+        ClassContext context = new ClassContext();
+
+		List<Orders> orders = context.Orders.Include(u => u.Worker)
+			.Include(u => u.Client).Include(u => u.Production)
+			.Include(u => u.Warehouse).ToList();
+
+		return orders;
+    }
 
 	public static int ReceiveAccessLevel(int id)
 	{

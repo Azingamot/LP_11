@@ -26,5 +26,7 @@ public class ClassContext: DbContext
     public DbSet<WarehouseProduct> WarehouseProducts { get; set; }
     public DbSet<ProductionProductionProperty> ProductionProductionPropertes { get; set; }
     public DbSet<Post> Posts { get; set; }
+
+    public DbSet<ProductionImage> ProductionImages { get; set; }
 }
 

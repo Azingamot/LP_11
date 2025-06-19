@@ -48,7 +48,14 @@
 			</table>
 			<div class="production-image-holder vertical">
 				<div class="production-image">
-					<img src="/images/not_uploaded.png" />
+					@if (!string.IsNullOrEmpty(GetImage(product)))
+					{
+						<img src="data: image/jpg; base64, @GetImage(product)" />
+					}
+					else
+					{
+						<img src="images/not_uploaded.png" />
+					}
 				</div>
 			</div>	
 		</div>
@@ -74,6 +81,22 @@
 				await InvokeAsync(StateHasChanged);
 			}
 		}
+	}
+
+	private string GetImage(Production production)
+	{
+		if (production != null)
+		{
+			ClassContext context = new ClassContext();
+			ProductionImage? productionImage = context.ProductionImages.Where(u => u.Production == production).FirstOrDefault();
+
+			if (productionImage != null)
+			{
+				string image = Convert.ToBase64String(productionImage.Image);
+				return image;
+			}
+		}
+		return "";
 	}
 }
 
