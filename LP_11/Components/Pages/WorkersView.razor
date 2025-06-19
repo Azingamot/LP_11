@@ -14,7 +14,7 @@
 		<h1 style="display: flex; justify-content: center; width: 100%;">Сотрудники</h1>
 	</div>
 	<div class="container">
-		<form class="base-form small-text">
+		<form @onsubmit=CreateWorker class="base-form small-text">
 			<h3 style="text-align: center">Добавление сотрудников</h3>
 			<table class="property-table">
 				<tr>
@@ -22,7 +22,7 @@
 						<p>ФИО</p>
 					</th>
 					<td>
-						<input type="text" required />
+						<input @bind=fullName type="text" required />
 					</td>
 				</tr>
 				<tr>
@@ -30,7 +30,7 @@
 						<p>Почта</p>
 					</th>
 					<td>
-						<input type="email" />
+						<input @bind=email type="email" />
 					</td>
 				</tr>
 				<tr>
@@ -38,7 +38,7 @@
 						<p>Номер телефона</p>
 					</th>
 					<td>
-						<input type="tel" />
+						<input @bind=phoneNumber type="tel" />
 					</td>
 				</tr>
 				<tr>
@@ -46,7 +46,7 @@
 						<p>Дата рождения</p>
 					</th>
 					<td>
-						<input type="date"/>
+						<input @bind=birthDate type="date"/>
 					</td>
 				</tr>
 				<tr>
@@ -173,6 +173,10 @@
 
 	private int? factory;
 	private int? post;
+	private string fullName = "";
+	private DateTime birthDate = DateTime.Now;
+	private string email = "";
+	private string phoneNumber = "";
 
 	protected async override void OnInitialized()
 	{
@@ -198,6 +202,38 @@
 		workers = DataReceiver.ReceiveWorkers();
 		workers.Reverse();
 		await InvokeAsync(StateHasChanged);
+	}
+
+	private void CreateWorker()
+	{
+		if (string.IsNullOrEmpty(fullName) == false)
+		{
+			ClassContext context = new ClassContext();
+
+			Worker worker = new Worker();
+			worker.FullName = fullName;
+			worker.BirthDate = birthDate;
+			worker.PhoneNumber = phoneNumber;
+			worker.Email = email;
+
+			Factory? factoryNew = context.Factories.Where(u => u.Id == factory).FirstOrDefault();
+
+			if (factoryNew != null)
+			{
+				worker.Factory = factoryNew;
+			}
+
+			Post? postNew = context.Posts.Where(u => u.Id == post).FirstOrDefault();
+
+			if (postNew != null)
+			{
+				worker.Post = postNew;
+			}
+
+			context.Workers.Add(worker);
+			context.SaveChanges();
+		}
+		LoadWorkers();
 	}
 }
 
