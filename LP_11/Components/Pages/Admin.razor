@@ -33,6 +33,23 @@
 @code {
 	private string? login = "";
 
+	protected async override void OnInitialized()
+	{
+		string id = await cookie.GetValue("key");
+
+		if (id != null)
+		{
+			int level = DataReceiver.ReceiveAccessLevel(int.Parse(Encryptor.Decrypt(id)));
+
+			if (level < 10)
+			{
+				nav.NavigateTo("/");
+			}
+
+		}
+
+	}
+
 	private async void GetPassword()
 	{
 		if (!string.IsNullOrEmpty(login))

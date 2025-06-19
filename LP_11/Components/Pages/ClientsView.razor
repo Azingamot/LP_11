@@ -3,6 +3,7 @@
 @using Microsoft.EntityFrameworkCore;
 @inject NavigationManager nav;
 @inject ICookie cookie;
+@inject IJSRuntime Js;
 @rendermode InteractiveServer
 
 <PageTitle>Клиенты</PageTitle>
@@ -14,10 +15,143 @@
 		<h1 style="display: flex; justify-content: center; width: 100%;">Клиенты</h1>
 	</div>
 	<div class="container">
-		<h3 style="text-align: center">Скоро будет реализовано.</h3>
+		<form @onsubmit=AddClient class="base-form small-text">
+			<h3 style="text-align: center">Добавление клиентов</h3>
+			<table class="production-table">
+				<tr>
+					<th>
+						<p>Наименование</p>
+					</th>
+					<td>
+						<input @bind=name type="text" required/>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>ИНН</p>
+					</th>
+					<td>
+						<input @bind=inn type="text" placeholder="************"/>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Почта</p>
+					</th>
+					<td>
+						<input @bind=email type="email" />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Номер телефона</p>
+					</th>
+					<td>
+						<input @bind=phoneNumber type="tel" />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Адрес</p>
+					</th>
+					<td>
+						<input @bind=adress type="text" />
+					</td>
+				</tr>
+			</table>
+			<div style="width: 100%; display: flex; justify-content: center">
+				<input type="submit" class="main-button" value="Добавить" />
+			</div>
+		</form>
+	</div>
+	<div class="container">
+		<h3 style="text-align: center">Список клиентов компании</h3>
+		@if (clients != null)
+		{
+			@foreach (Client client in clients)
+			{
+				<div class="container">
+					<table class="production-table">
+						<tr>
+							<th>
+								@client.Name
+							</th>
+						</tr>
+						<tr>
+							<th>
+								<p>ИНН</p>
+							</th>
+							<td>
+								@client.INN
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<p>Адрес</p>
+							</th>
+							<td>
+								@client.Adress
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<h3>Контактные данные</h3>
+							</th>
+						</tr>
+						<tr>
+							<th>
+								<p>Почта</p>
+							</th>
+							<td>
+								@client.Email
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<p>Номер телефона</p>
+							</th>
+							<td>
+								@client.PhoneNumber
+							</td>
+						</tr>
+					</table>
+				</div>
+			}
+		}
 	</div>
 </div>
 
 @code {
+	private List<Client>? clients = new();
+
+	private string name = "";
+	private string inn = "";
+	private string adress = "";
+	private string email = "";
+	private string phoneNumber = "";
+
+	protected override async void OnInitialized()
+	{
+		clients = DataReceiver.ReceiveClients();
+		clients.Reverse();
+		await InvokeAsync(StateHasChanged);
+	}
+
+	private async void AddClient()
+	{
+		if (!string.IsNullOrEmpty(name))
+		{
+			Client client = new Client() { Name = name, Adress = adress, Email = email, PhoneNumber = phoneNumber, INN = inn};
+			Database.Context.Clients.Add(client);
+			Database.Context.SaveChanges();
+
+			clients = DataReceiver.ReceiveClients();
+			clients.Reverse();
+
+			await Js.InvokeVoidAsync("alert", "клиент был добавлен");
+
+			await InvokeAsync(StateHasChanged);
+		}
+	}
 }
 

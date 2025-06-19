@@ -14,10 +14,190 @@
 		<h1 style="display: flex; justify-content: center; width: 100%;">Сотрудники</h1>
 	</div>
 	<div class="container">
-		<h3 style="text-align: center">Скоро будет реализовано.</h3>
+		<form class="base-form small-text">
+			<h3 style="text-align: center">Добавление сотрудников</h3>
+			<table class="property-table">
+				<tr>
+					<th>
+						<p>ФИО</p>
+					</th>
+					<td>
+						<input type="text" required />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Почта</p>
+					</th>
+					<td>
+						<input type="email" />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Номер телефона</p>
+					</th>
+					<td>
+						<input type="tel" />
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Дата рождения</p>
+					</th>
+					<td>
+						<input type="date"/>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Завод</p>
+					</th>
+					<td>
+						<select @bind=factory>
+							@if (factories != null)
+							{
+								foreach (Factory factory in factories)
+								{
+									<option value="@factory.Id">@factory.Name</option>
+								}
+							}
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>
+						<p>Должность</p>
+					</th>
+					<td>
+						<select @bind=post>
+							@if (posts != null)
+							{
+								foreach (Post post in posts)
+								{
+									<option value="@post.Id">@post.Name</option>
+								}
+							}
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div style="width: 100%; display: flex; justify-content: center">
+				<input type="submit" class="main-button" value="Добавить" />
+			</div>
+		</form>
 	</div>
+	<div class="container">
+		<h3 style="text-align: center">Список сотрудников компании</h3>
+	</div>
+	@if (workers != null && workers.Count > 0)
+	{
+		foreach (Worker worker in workers)
+		{
+			<div class="container">
+				<table class="production-table">
+					<tr>
+						<th>
+							@worker.FullName
+						</th>
+					</tr>
+					@if (worker.Factory != null)
+					{
+						<tr>
+							<th>
+								<p>Место работы</p>
+							</th>
+							<td>
+								@worker.Factory.Name
+							</td>
+						</tr>
+					}
+					@if (worker.Post != null)
+					{
+						<tr>
+							<th>
+								<p>Должность</p>
+							</th>
+							<td>
+								@worker.Post.Name
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<p>Зарплата</p>
+							</th>
+							<td>
+								@worker.Post.Salary Рублей
+							</td>
+						</tr>
+					}
+					<tr>
+						<th>
+							<p>Дата рождения</p>
+						</th>
+						<td>
+							@Convert.ToDateTime(worker.BirthDate).ToShortDateString()
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<h3>Контактные данные</h3>
+						</th>
+					</tr>
+					<tr>
+						<th>
+							<p>Почта</p>
+						</th>
+						<td>
+							@worker.Email
+						</td>
+					</tr>
+					<tr>
+						<th>
+							<p>Номер телефона</p>
+						</th>
+						<td>
+							@worker.PhoneNumber
+						</td>
+					</tr>
+				</table>
+			</div>
+		}
+	}
 </div>
 
 @code {
+	private List<Worker> workers = new();
+	private List<Factory> factories = new();
+	private List<Post> posts = new();
+
+	private int? factory;
+	private int? post;
+
+	protected async override void OnInitialized()
+	{
+		string id = await cookie.GetValue("key");
+
+		if (id != null)
+		{
+			int level = DataReceiver.ReceiveAccessLevel(int.Parse(Encryptor.Decrypt(id)));
+
+			if (level < 10)
+			{
+				nav.NavigateTo("/");
+			}
+			LoadWorkers();
+			factories = DataReceiver.ReceiveFactories();
+			posts = DataReceiver.ReceivePosts();
+			await InvokeAsync(StateHasChanged);
+		}
+	}
+
+	private async void LoadWorkers()
+	{
+		workers = DataReceiver.ReceiveWorkers();
+		workers.Reverse();
+		await InvokeAsync(StateHasChanged);
+	}
 }
 

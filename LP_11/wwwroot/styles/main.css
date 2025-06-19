@@ -196,6 +196,11 @@ body
     gap: 40px;
 }
 
+.base-form table th
+{
+    width: 50%;
+}
+
 .base-form p 
 {
     display: flex;
@@ -228,3 +233,4 @@ select, input, textarea {
     justify-content: center;
     width: 40%;
 }
+

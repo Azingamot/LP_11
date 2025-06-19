@@ -1,0 +1,136 @@
+﻿:root {
+    --prod-bg: #343436;
+}
+
+.production-table tr td
+{
+    border-radius: .85em;
+    padding-left: 10px;
+    width: 100%;
+    text-align: right;
+}
+
+.production-table p
+{
+    margin: 0px;
+}
+
+.production-table tr
+{
+    width: 100%;
+}
+
+.property-table tr th {
+    width: 100%;
+    text-align: left;
+}
+
+.small-text p
+{
+    font-size: 15px;
+    text-align: left;
+}
+
+.property-table tr
+{
+    display: flex;
+    justify-content: space-between;
+}
+
+.property-table tr td {
+    width: 100%;
+    text-align: right;
+    padding-right: 10px;
+    border-radius: .85em;
+}
+
+.production-image-holder.vertical
+{
+    align-items: center;
+}
+
+.production-table h2
+{
+    text-align: center;
+}
+
+.production-image 
+{
+    margin-left: 10px;
+    background-color: white;
+    height: 200px;
+    width: 200px;
+}
+
+.production-grid
+{
+    width: 100%;
+    display: grid;
+    grid-template-rows: 80% 20%;
+}
+
+.production-grid-column 
+{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 80% 20%;
+}
+
+.production-grid-holder 
+{
+    display: grid;
+    width: 100%;
+    grid-template-columns: 22% 22% 22%;
+    grid-auto-rows: 700px;
+    grid-row-gap: 200px;
+    grid-column-gap: 100px;
+}
+
+.production-grid-holder .container 
+{
+    margin-right: 20px;
+    width: 100%;
+    height: 100%;
+}
+
+.container .production-image-holder
+{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.production-image img
+{
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+}
+
+.property-link {
+    background-color: var(--prod-bg);
+    text-decoration: none;
+    font-size: 20px;
+    border-radius: .5em;
+    padding-top: .85em;
+    padding-bottom: .85em;
+    width: 50%;
+    min-width: 160px;
+    color: var(--text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.property-link:hover {
+    background-color: var(--accent);
+}
+
+.property-button 
+{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    text-align: center;
+}

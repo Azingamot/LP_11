@@ -14,10 +14,61 @@
 		<h1 style="display: flex; justify-content: center; width: 100%;">Оборудование</h1>
 	</div>
 	<div class="container">
-		<h3 style="text-align: center">Скоро будет реализовано.</h3>
+		<h3 style="text-align: center">Перечень оборудования, производимого компанией</h3>
+	</div>
+	<div class="production-grid-holder">
+		@foreach (Production prod in productions)
+		{
+			<div class="container">
+				<div class="production-grid">
+					<table class="production-table">
+						<tr>
+							<h2>@prod.Name</h2>
+						</tr>
+						<tr>
+							<th>
+								<p>Категория</p>
+							</th>
+							<td>
+								@prod.Category.Name
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<p>Цена</p>
+							</th>
+							<td>
+								@prod.Price Рублей
+							</td>
+						</tr>
+						<tr>
+							<th class="property-button">
+								<a class="property-link" href="/product/@prod.Id">
+									<span>
+										Характеристики
+									</span>
+								</a>
+							</th>		
+						</tr>
+					</table>
+					<div class="production-image-holder">
+						<div class="production-image">
+							<img src="images/not_uploaded.png" />
+						</div>
+					</div>
+				</div>
+			</div>
+		}
 	</div>
 </div>
 
 @code {
+	List<Production> productions = new();
+
+	protected override async void OnInitialized()
+	{
+		productions = DataReceiver.ReceiveProduction();
+		await InvokeAsync(StateHasChanged);
+	}
 }
 

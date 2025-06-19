@@ -1,0 +1,79 @@
+﻿@page "/product/{id:int}"
+@using Utils;
+@using Microsoft.EntityFrameworkCore;
+@inject NavigationManager nav;
+@inject ICookie cookie;
+@rendermode InteractiveServer
+
+<PageTitle>Заказы</PageTitle>
+
+<LayoutView Layout="typeof(Views.Header)"></LayoutView>
+
+<div class="main-container">
+	<div class="container">
+		<h1 style="display: flex; justify-content: center; width: 100%;">Характеристики оборудования</h1>
+	</div>
+	<div class="container">
+		<div class="production-grid-column">
+			<table class="property-table">
+				@if (product != null)
+				{
+					<tr>
+						<th>Наименование</th>
+						<td>@product.Name</td>
+					</tr>
+					<tr>
+						<th>Категория</th>
+						<td>@product.Category.Name</td>
+					</tr>
+					<tr>
+						<th>Цена</th>
+						<td>@product.Price</td>
+					</tr>
+				}
+				@if (productionProperty != null)
+				{
+					@foreach (ProductionProductionProperty property in productionProperty)
+					{
+						<tr>
+							<th>
+								@property.ProductionPropety.Name
+							</th>
+							<td>
+								@property.Value
+							</td>
+						</tr>
+					}
+				}
+			</table>
+			<div class="production-image-holder vertical">
+				<div class="production-image">
+					<img src="/images/not_uploaded.png" />
+				</div>
+			</div>	
+		</div>
+		
+	</div>
+</div>
+
+@code {
+	[Parameter]
+	public int? Id { get; set; } = 0;
+	private List<ProductionProductionProperty>? productionProperty = new();
+	private Production? product; 
+
+	protected override async void OnInitialized()
+	{
+		if (Id != null && Id != 0)
+		{
+			product = DataReceiver.ReceiveProduction().Where(u => u.Id == Id).FirstOrDefault();
+
+			if (product != null)
+			{
+				productionProperty = DataReceiver.ReceiveProductionProperties(product);
+				await InvokeAsync(StateHasChanged);
+			}
+		}
+	}
+}
+
